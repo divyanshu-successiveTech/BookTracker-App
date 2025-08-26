@@ -1,0 +1,91 @@
+/* Simple utility classes used around the app */
+
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; width: 100%; }
+
+.nav { position: sticky; top: 0; background: #fff; border-bottom: 1px solid #e5e5e5; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 50; }
+.nav-left { display: flex; gap: 12px; align-items: center; }
+.nav-right { display: flex; gap: 10px; align-items: center; }
+.brand { font-weight: 700; color: #2563eb; }
+
+.footer { padding: 16px 20px; background: #fff; border-top: 1px solid #eee; text-align: center; color: #555; margin-top: auto; }
+.page-title { font-size: 24px; font-weight: bold; margin: 10px 0 18px; }
+
+.filters { display: flex; gap: 10px; margin-bottom: 16px; }
+.select, .input { padding: 8px 10px; border: 1px solid #ccc; border-radius: 8px; background: #fff; }
+.input { width: 100%; max-width: 320px; }
+
+.grid { display: grid; grid-template-columns: repeat(4,15rem); gap: 12px; }
+
+.card { background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.card-title { font-weight: 700; }
+.cover {
+  width: 100%;
+  height: 150px;        /* fixed height for image */
+  object-fit: cover;    /* ensures image doesn’t distort */
+  border-radius: 4px;
+}
+.desc { color: #444; font-size: 14px; min-height: 36px; }
+.muted { color: #666; font-size: 13px; }
+
+.btn { display: inline-block; background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+.btn-secondary { background: #ef4444; color: #fff; border: none; border-radius: 8px; padding: 8px 12px; }
+
+.warning { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; padding: 10px; border-radius: 8px; }
+
+
+
+.full-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;     /* full screen */
+  background: white ;   /* subtle gray bg */
+}
+
+.login-card {
+  background: #f0eded;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-card h1 {
+  margin-bottom: 1rem;
+}
+
+.login-card .input {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.login-card .btn {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+.btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.active-page {
+  background-color: #0056b3;
+}
+
