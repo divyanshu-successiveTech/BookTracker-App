@@ -95,6 +95,26 @@ class BookController{
         
 
     }
+
+    async changeCount(req:Request,res:Response){
+        const {id,likeChange} = req.body // like = +1 or -1
+        const result = await bookService.changeLike(id,likeChange)
+
+        if(!result ){
+            return res.json({
+                statuscode:404,
+                status:"Failure",
+                message:"No book found"
+            })
+        }
+
+        return res.json({
+            statuscode:200,
+            status:"Success",
+            data:result
+        })
+
+    }
     
 }
 

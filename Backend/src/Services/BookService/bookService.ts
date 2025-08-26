@@ -29,6 +29,25 @@ class BookService{
         return value;
 
     }
+
+    async changeLike(id: string, likeChange: number) {
+        if (!id || likeChange === undefined) {
+        throw new Error("Book id and like change value are required");
+        }
+
+        // Update likes atomically
+        const updatedBook = await Books.findByIdAndUpdate(
+        id,
+        { $inc: { likes: likeChange } }, // increment or decrement
+        { new: true } // return updated document
+        );
+
+        if (!updatedBook) {
+        throw new Error("Book not found");
+        }
+
+        return updatedBook;
+    }
 }
 
 export const bookService = new BookService;

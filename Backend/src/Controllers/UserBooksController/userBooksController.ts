@@ -14,7 +14,6 @@ class UserBookController{
             })
         }
 
-        console.log("WORKING AND SAVING")
 
         res.status(200).json({
                 statusCode:200,
