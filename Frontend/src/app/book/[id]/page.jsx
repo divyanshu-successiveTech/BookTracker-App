@@ -6,9 +6,12 @@ import { getBookById } from "../../../lib/bookService";
 import { getAllAuthors } from "../../../lib/authorService";
 import { getAllCategories } from "../../../lib/categoryService";
 import { updateUserReadlist } from "../../../lib/userBookService";
-import LikeButton from "../../../components/LikeButton"; // import LikeButton
+import { useRouter } from "next/navigation";
+import BookContent from "@/components/BookContent";
+
 
 export default function BookDetailPage() {
+
   const { id } = useParams();
   const { user } = useAuth();
   const [book, setBook] = useState(null);
@@ -18,6 +21,13 @@ export default function BookDetailPage() {
   const [message, setMessage] = useState("");
   const [inReadlist, setInReadlist] = useState(false);
   const [currentStatus, setCurrentStatus] = useState("");
+
+  // Like state
+  const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = useState(0);
+
+  const router = useRouter();
+
 
   const buttonStyle = {
     backgroundColor: "#007bff",
@@ -39,7 +49,10 @@ export default function BookDetailPage() {
   useEffect(() => {
     if (!id) return;
 
-    getBookById(id).then(setBook);
+    getBookById(id).then((data) => {
+      setBook(data);
+      setLikes(data.likes || 0);
+    });
     getAllAuthors().then((list) =>
       setAuthorMap(Object.fromEntries(list.map((a) => [a._id, a.authorName])))
     );
@@ -62,7 +75,14 @@ export default function BookDetailPage() {
         const data = await res.json();
 
         const userList = data?.data?.result?.[0]?.userList || [];
-        const entry = userList.find((item) => item.bookId._id === id);
+        const entry = userList.find((item) => {
+          if (!item.bookId) return false;
+          if (typeof item.bookId === "object" && item.bookId._id) {
+            return item.bookId._id === id;
+          }
+          return item.bookId === id;
+        });
+
         if (entry) {
           setInReadlist(true);
           setCurrentStatus(entry.status);
@@ -77,6 +97,31 @@ export default function BookDetailPage() {
 
     fetchReadlist();
   }, [user, id]);
+
+ useEffect(() => {
+  if (user && book?._id) {
+    const fetchLiked = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/likedBooks/${user._id}`,
+          { credentials: "include" }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          const likedBooks = data?.data?.result || [];
+          const isLiked = likedBooks.some(
+            (b) => b?.bookId?._id === book._id
+          );
+          setLiked(isLiked);
+        }
+      } catch (err) {
+        console.error("Error checking liked status:", err);
+      }
+    };
+    fetchLiked();
+  }
+}, [user, book]);
+
 
   if (!book) return <p>Loading...</p>;
 
@@ -128,6 +173,47 @@ export default function BookDetailPage() {
     }
   };
 
+  const handleToggleLike = async () => {
+    if (!user) {
+      alert("Please log in first.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`http://localhost:5000/liked`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          userId: user._id,
+          bookId: book._id,
+          status: liked ? "unlike" : "like",
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update like");
+      const data = await res.json();
+      console.log("Like response:", data);
+
+      // Update UI locally, regardless of backend response
+      setLiked((prev) => !prev);
+      setLikes((prev) => (liked ? prev - 1 : prev + 1));
+
+       const res2 = await fetch("http://localhost:5000/likechange", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",  // ✅ add this
+      body: JSON.stringify({ id: book._id, likeChange:liked?-1:+1 }),
+    });
+
+    const data2 = await res2.json();
+    console.log("Likechange response:", data2); 
+      
+    } catch (err) {
+      console.error("Error updating like:", err);
+    }
+  };
+
   const renderActionButtons = () => {
     if (!inReadlist) {
       return (
@@ -140,13 +226,7 @@ export default function BookDetailPage() {
           >
             Completed
           </button>
-          <button
-            style={loading ? disabledButtonStyle : buttonStyle}
-            disabled={loading}
-            onClick={() => handleAddToReadlist("reading")}
-          >
-            Read Now
-          </button>
+          
           <button
             style={loading ? disabledButtonStyle : buttonStyle}
             disabled={loading}
@@ -163,13 +243,6 @@ export default function BookDetailPage() {
         return (
           <>
             <p><b>Status:</b> {currentStatus}</p>
-            <button
-              style={loading ? disabledButtonStyle : buttonStyle}
-              disabled={loading}
-              onClick={() => handleAddToReadlist("reading")}
-            >
-              Read Now
-            </button>
             <button
               style={loading ? disabledButtonStyle : buttonStyle}
               disabled={loading}
@@ -251,12 +324,30 @@ export default function BookDetailPage() {
             <div style={{ marginTop: 20 }}>
               {renderActionButtons()}
 
-              {/* Like Button */}
-              <LikeButton
-                bookId={book._id}
-                initialLikes={book.likes}
-                initialLiked={false} // optionally, fetch if user has liked
-              />
+              <button
+            style={loading ? disabledButtonStyle : buttonStyle}
+            disabled={loading}
+            onClick={async () => {
+              await handleAddToReadlist("reading");
+              router.push(`/book/${book._id}/content`);
+            }}
+          >
+            Read Now
+          </button>
+
+              {/* Like Button ❤️ / 🤍 */}
+              <button
+                onClick={handleToggleLike}
+                style={{
+                  fontSize: "1.5rem",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  marginLeft: "10px",
+                }}
+              >
+                {liked ? "❤️" : "🤍"} {likes}
+              </button>
             </div>
           </div>
         )}

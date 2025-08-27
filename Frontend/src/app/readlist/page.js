@@ -47,60 +47,54 @@ export default function ReadlistPage() {
   const reading = books.filter((b) => b.status === "reading");
   const read = books.filter((b) => b.status === "read");
 
+  // Helper to safely render BookCard
+  const renderBookCard = (item) => {
+    const book = item.bookId;
+    if (!book) return null;
+
+    return (
+      <BookCard
+        key={item._id}
+        book={book}
+        status={item.status}
+        authorName={book.authorId?.authorName || "Unknown"}
+        categoryName={book.categoryId?.categoryName || "Unknown"}
+      />
+    );
+  };
+
+  const hasAnyBooks = toRead.length > 0 || reading.length > 0 || read.length > 0;
+
+
   return (
     <div className="container">
       <h1 className="text-2xl font-bold mb-6">📚 My Readlist</h1>
 
-      {/* To Read Section */}
+      {!hasAnyBooks && <p>No books in your list yet.</p>}
+
       {toRead.length > 0 && (
-        <div className="grid">
+        <div className="grid mb-6">
           <h2 className="text-xl font-semibold mb-4">📖 Read Later</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {toRead.map((item) => (
-              <BookCard
-                key={item._id}
-                book={item.bookId}
-                status={item.status}
-                authorName={item.bookId.authorId?.authorName}
-                categoryName={item.bookId.categoryId?.categoryName}
-              />
-            ))}
+            {toRead.map(renderBookCard)}
           </div>
         </div>
       )}
 
-      {/* Reading Section */}
       {reading.length > 0 && (
-        <div className="grid">
+        <div className="grid mb-6">
           <h2 className="text-xl font-semibold mb-4">📚 Reading Now</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {reading.map((item) => (
-              <BookCard
-                key={item._id}
-                book={item.bookId}
-                status={item.status}
-                authorName={item.bookId.authorId?.authorName}
-                categoryName={item.bookId.categoryId?.categoryName}
-              />
-            ))}
+            {reading.map(renderBookCard)}
           </div>
         </div>
       )}
 
-      {/* Read Section */}
       {read.length > 0 && (
-        <div className="grid">
+        <div className="grid mb-6">
           <h2 className="text-xl font-semibold mb-4">✅ Completed</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {read.map((item) => (
-              <BookCard
-                key={item._id}
-                book={item.bookId}
-                status={item.status}
-                authorName={item.bookId.authorId?.authorName}
-                categoryName={item.bookId.categoryId?.categoryName}
-              />
-            ))}
+            {read.map(renderBookCard)}
           </div>
         </div>
       )}

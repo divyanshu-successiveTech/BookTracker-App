@@ -14,10 +14,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="page-body">
         {/* Background video */}
-        <video autoPlay muted loop playsInline className="background-video">
-          <source src="/BookBackground.mp4" type="video/mp4" />
+        {/* <video autoPlay muted loop playsInline className="background-video">
+          <source src="/bg.mp4" type="video/mp4" />
           Your browser does not support the video tag.
-        </video>
+        </video> */}
 
         <AuthProvider>
           <Navbar />

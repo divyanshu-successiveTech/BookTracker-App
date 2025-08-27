@@ -10,6 +10,7 @@ const BookValidatorSchema = Joi.object({
     authorId:Joi.string().required(),
     categoryId:Joi.string().required(),
     coverImage:Joi.string(),
+    content:Joi.string(),
 
 
 })

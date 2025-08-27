@@ -41,7 +41,7 @@ class UserBookController{
         res.status(200).json({
                 statusCode:200,
                 status:"Success",
-                data:{message:"Data saved Successfully",
+                data:{message:"Data fetched Successfully",
                     result : result
                 }
         })

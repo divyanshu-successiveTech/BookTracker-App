@@ -14,7 +14,13 @@ const booksSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Category'
     },
-    coverImage: String
+    coverImage: String,
+    content: {
+        type: String,
+        required: false
+    }
+    
+    
 })
 
 module.exports= mongoose.model("Books",booksSchema);

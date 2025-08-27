@@ -39,7 +39,7 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;     /* full screen */
-  background: white ;   /* subtle gray bg */
+    /* subtle gray bg */
 }
 
 .login-card {

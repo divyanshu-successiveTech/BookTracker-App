@@ -18,7 +18,6 @@ class getBookByCategory{
                 message:"Invalid Format"
             })
         }
-        console.log(value);
 
         (req as any).validatedCategory = {
             category: value

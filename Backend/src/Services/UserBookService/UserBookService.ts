@@ -1,9 +1,18 @@
 const UserBooks =require( "../../Models/userReadlist" )
+const UserLikedBooks = require("../../Models/userLikedSchema")
+import mongoose from "mongoose";
+
 
 interface UpsertInput {
   userId: string;
   bookId: string;
   status: "read" | "reading" | "to read" | "remove";
+}
+
+interface UpsertUser {
+  userId: string;
+  bookId: string;
+  status: "like" | "unlike";
 }
 
 class UserBookService{
@@ -65,6 +74,36 @@ class UserBookService{
         });        
         return result;
 
+    }
+
+
+    upsertUserLikedBooks = async ({ userId, bookId, status }: UpsertUser) => {
+        if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(bookId)) {
+            throw new Error("Invalid userId or bookId");
+        }
+
+        if (status === "like") {
+            const updated = await UserLikedBooks.findOneAndUpdate(
+                { user_id: userId, "likedBooks.bookId": { $ne: bookId } }, // only add if not already present
+                { $push: { likedBooks: { bookId } } }, // ✅ corrected
+                { upsert: true, new: true }
+            );
+            return updated;
+        } else {
+            // unlike: remove the book if present
+            const updated = await UserLikedBooks.findOneAndUpdate(
+                { user_id: userId },
+                { $pull: { likedBooks: { bookId } } }, // ✅ corrected
+                { new: true }
+            );
+            return updated;
+        }
+    };
+
+    async getUserLikedBooks(id: string) {
+        const result = await UserLikedBooks.findOne({ user_id: id })
+        .populate("likedBooks.bookId");
+        return result || { user_id: id, likedBooks: [] };
     }
 
 }

@@ -108,6 +108,30 @@ class BookController{
             })
         }
 
+            console.log("PRINTING",result)
+
+
+        return res.json({
+            statuscode:200,
+            status:"Success",
+            data:result
+        })
+
+
+    }
+
+
+    async getBookByName(req:Request,res:Response){
+        const result = await bookService.findBookByName(req.params.validatedBookName)
+
+        if(!result ){
+            return res.json({
+                statuscode:404,
+                status:"Failure",
+                message:"No book found"
+            })
+        }
+
         return res.json({
             statuscode:200,
             status:"Success",

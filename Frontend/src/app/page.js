@@ -60,7 +60,7 @@ export default function HomePage() {
 
   return (
     <div className="container">
-      <h1 className="page-title">Book Tracker App</h1>
+      <h1 className="page-title">All Books</h1>
 
       <div className="filters">
         <select value={authorId} onChange={(e) => setAuthorId(e.target.value)} className="select">

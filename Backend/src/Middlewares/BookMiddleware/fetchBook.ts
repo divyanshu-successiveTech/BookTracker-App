@@ -17,7 +17,7 @@ class FetchBooks{
                 message:"Invalid Format"
             })
         }
-        console.log(value);
+        
 
         req.body.ValidatedBookSchema = value
         next();

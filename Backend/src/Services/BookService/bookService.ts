@@ -35,7 +35,7 @@ class BookService{
         throw new Error("Book id and like change value are required");
         }
 
-        // Update likes atomically
+        // Update likes automatically
         const updatedBook = await Books.findByIdAndUpdate(
         id,
         { $inc: { likes: likeChange } }, // increment or decrement
@@ -47,6 +47,15 @@ class BookService{
         }
 
         return updatedBook;
+    }
+
+    async findBookByName(name: string) {
+        if (!name) return null;
+
+        const regex = new RegExp(name, "i"); 
+
+        const books = await Books.find({ name: { $regex: regex } });
+        return books;
     }
 }
 

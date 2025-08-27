@@ -5,6 +5,7 @@ import { bookByAuthor } from "./bookByAuthorRoute";
 import { bookByCategory } from "./bookByCategoryRoute";
 import { getAllBooks } from "./getAllBooks";
 import { likeRouter } from "./changeLikeRoute";
+import { bookByNameRouter } from "./bookByNameRoute";
 
 export const bookRouter = Router();
 
@@ -14,3 +15,4 @@ bookRouter.use(bookByAuthor);
 bookRouter.use(bookByCategory);
 bookRouter.use(getAllBooks);
 bookRouter.use(likeRouter);
+bookRouter.use(bookByNameRouter);
