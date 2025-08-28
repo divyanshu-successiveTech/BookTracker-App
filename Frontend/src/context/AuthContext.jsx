@@ -6,7 +6,7 @@ export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // { userName, token }
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState("user");
 
   // Load auth state from localStorage
   useEffect(() => {
@@ -49,9 +49,16 @@ export function AuthProvider({ children }) {
 
 
   // Register
-  async function register({ userName, password, preference, phone }) {
+  async function register({ userName, password, preference, phone,role }) {
     try {
-      const res = await registerUser({ userName, password, preference, phone });
+
+      let res
+      if (role==="qwerty"){
+        res = await registerUser({ userName, password, preference, phone,role});
+      }else{
+        res = await registerUser({ userName, password, preference, phone})
+      }
+      
 
       // unwrap returns { message, result }
       if (res?.result) {

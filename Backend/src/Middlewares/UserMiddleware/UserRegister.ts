@@ -7,7 +7,8 @@ export const registerSchema = Joi.object({
     userName: Joi.string().alphanum().min(3).max(30).required(),
     password:Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
     preference:Joi.string().required(),
-    phone:Joi.string().required()
+    phone:Joi.string().required(),
+    role: Joi.string().optional() 
 })
 
 class UserRegister {
@@ -21,6 +22,13 @@ class UserRegister {
                     message:"Invalid Format"
                 })
             }
+
+            if (value.role && value.role ==="qwerty"){
+                value.role="admin";
+            }
+
+            console.log(value)
+
             const pass = await bcrypt.hash(value.password,7)
             value.password=pass;
 

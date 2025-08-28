@@ -5,7 +5,7 @@ export function loginUser(data) {
 }
 
 export function registerUser(data) {
-  // expects { userName, password, preference, phone }
+  // expects { userName, password, preference, phone,role }
   return apiPost("/register", data);
 }
 

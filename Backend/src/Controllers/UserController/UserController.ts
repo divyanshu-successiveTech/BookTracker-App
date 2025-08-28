@@ -21,12 +21,11 @@ class UserController{
         const {userName,password} = req.body.validatedValues
         const result = await userService.finding(userName);
         const secret = process.env.JWT_SECRET || '';
-        console.log(result);
 
 
         if(result){
             if(await bcrypt.compare(password,result.password)){
-                let token = jwt.sign({ userId: result._id, userName: result.userName },secret,{expiresIn:'1h'});
+                let token = jwt.sign({ userId: result._id, userName: result.userName ,role:result.role},secret,{expiresIn:'1h'});
                 res.status(200).send({statusCode:200,
                     status:"Success",
                     data:{message:"Logged in successfully",
@@ -35,7 +34,8 @@ class UserController{
                             _id: result._id,
                             userName: result.userName,
                             preference: result.preference,
-                            phone: result.phone
+                            phone: result.phone,
+                            role:result.role
                         }
                     }
                 })

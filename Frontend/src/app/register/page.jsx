@@ -10,6 +10,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [preference, setPreference] = useState("");
   const [phone, setPhone] = useState("");
+  const [role, setRoleAuthenticate] = useState(""); 
   const [categories, setCategories] = useState([]);
   
   const router = useRouter();
@@ -27,11 +28,13 @@ export default function RegisterPage() {
 
   async function handleRegister() {
     if (!userName || !password || !preference || !phone) {
-      alert("Please fill all fields");
+      alert("Please fill all required fields");
       return;
     }
 
-    const ok = await register({ userName, password, preference, phone });
+    console.log(role)
+    const ok = await register({ userName, password, preference, phone, role });
+    
 
     if (ok) {
       router.push("/login"); // navigate after successful registration
@@ -78,6 +81,14 @@ export default function RegisterPage() {
           placeholder="Phone"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+        />
+
+        <input
+          className="input"
+          type="password"
+          placeholder="Only enter this to register as admin"
+          value={role}
+          onChange={(e) => setRoleAuthenticate(e.target.value)}
         />
 
         <button className="btn" onClick={handleRegister}>

@@ -14,6 +14,15 @@ class BookController{
 
     }
 
+    async saveMultipleBooks(req:Request,res:Response){
+        const result = await bookService.addMultipleBooks(req.body.books);
+        res.json({statusCode:200,
+            status:"Success",
+            data:{message:"Saved Successfully"}
+        })
+
+    }
+
     async getBook(req:Request,res:Response){
         const { id } = req.body.ValidatedBookSchema;
         const result = await bookService.fetchBook(id);
@@ -137,6 +146,27 @@ class BookController{
             status:"Success",
             data:result
         })
+
+    }
+
+    async deleteBook(req:Request,res:Response){
+
+        const deletedBook = await bookService.deleteBook((req as any).validatedBookId);
+
+        if (!deletedBook) {
+            return res.status(404).json({
+                statusCode: 404,
+                status: "Failure",
+                message: "Book not found"
+            });
+        }
+
+        return res.status(200).json({
+            statusCode: 200,
+            status: "Success",
+            message: "Book deleted successfully",
+            data: deletedBook
+        });
 
     }
     

@@ -154,11 +154,28 @@ export default function Navbar() {
           </ul>
         )}
       </div>
+      
 
       {/* Right side: User actions */}
       <div className="nav-right" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
         {user ? (
           <>
+            {/* Admin link (only for admins) */}
+            {user?.role === "admin" && (
+              <Link
+                href="/admin"
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "5px",
+                  backgroundColor: "#f59e0b", // amber
+                  color: "#fff",
+                  textDecoration: "none"
+                }}
+              >
+                Admin Panel
+              </Link>
+            )}
+
             <Link
               href="/readlist"
               style={{

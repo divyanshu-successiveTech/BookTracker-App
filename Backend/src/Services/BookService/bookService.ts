@@ -2,6 +2,19 @@ import mongoose, { ObjectId } from "mongoose";
 
 const Books = require("../../Models/booksSchema")
 
+interface BookInterface {
+  name: string;
+  shortDescription: string;
+  readingTime: string;
+  pages: number;
+  likes: number;
+  authorId: string;
+  categoryId: string;
+  coverImage: string;
+  content: string;
+}
+
+
 class BookService{
     async addBook(data : typeof Books){
         const values = new Books(data);
@@ -56,6 +69,17 @@ class BookService{
 
         const books = await Books.find({ name: { $regex: regex } });
         return books;
+    }
+
+    async deleteBook(id:string){
+
+        const deletedBook = await Books.findByIdAndDelete(id);
+        return deletedBook
+    }
+
+    async addMultipleBooks(data:[BookInterface]){
+        const insertedBooks = await Books.insertMany(data)
+        return insertedBooks
     }
 }
 
