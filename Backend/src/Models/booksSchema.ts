@@ -1,26 +1,29 @@
 import mongoose from "mongoose";
 
-const booksSchema = new mongoose.Schema({
-    name:String,
-    shortDescription:String,
-    readingTime:String,
-    pages:Number,
-    likes:Number,
-    authorId:{
-        type: mongoose.Schema.ObjectId,
-        ref: 'Author'
+const booksSchema = new mongoose.Schema(
+  {
+    name: String,
+    shortDescription: String,
+    readingTime: String,
+    pages: Number,
+    likes: Number,
+    authorId: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Author",
     },
-    categoryId:{
-        type: mongoose.Schema.ObjectId,
-        ref: 'Category'
+    categoryId: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Category",
     },
     coverImage: String,
     content: {
-        type: String,
-        required: false
-    }
-    
-    
-})
+      type: String,
+      required: false,
+    },
+  },
+  {
+    timestamps: true, 
+  }
+);
 
-module.exports= mongoose.model("Books",booksSchema);
+module.exports = mongoose.model("Books", booksSchema);

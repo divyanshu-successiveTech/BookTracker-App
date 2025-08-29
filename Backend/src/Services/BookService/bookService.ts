@@ -37,10 +37,9 @@ class BookService{
         return value;
     }
 
-    async getAllBooks(){
-        const value = await Books.find({});
+    async getAllBooks() {
+        const value = await Books.find({}).sort({ createdAt: -1 });
         return value;
-
     }
 
     async changeLike(id: string, likeChange: number) {

@@ -1,31 +1,68 @@
-import express, { NextFunction, Request,Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
-import { allRouter } from "./Routes/allRoutes";
+import { createServer } from "http";
+import { useServer } from 'graphql-ws/lib/use/ws';
+import { WebSocketServer } from "ws";
+import { ApolloServer } from "apollo-server-express";
 import dotenv from "dotenv";
-import cors from "cors"; 
+import cors from "cors";
+import { allRouter } from "./Routes/allRoutes";
+import { schema } from "../src/GraphQL/schema";
 
-dotenv.config()
+dotenv.config();
 
+const app :any = express();
 
-const app = express();
+app.use("/graphql",cors());
 app.use(
   cors({
-    origin: "http://localhost:3000", // frontend URL
+    origin: ["http://localhost:3000","*"],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true, // if you use cookies/sessions later
+    credentials: true,
   })
-);  
+);
 app.use(express.json());
 
-mongoose.connect("mongodb://localhost:27017/PracticeDB");
+// REST routes
+app.use("/", allRouter);
 
-app.use("/",allRouter);
+// Simple health check
+app.get("/", (req: Request, res: Response, next: NextFunction) => {
+  res.send("working");
+});
 
+// Connect to MongoDB
+mongoose.connect("mongodb://localhost:27017/PracticeDB").then(() => {
+  console.log("MongoDB connected");
+});
 
-app.get("/",(req:Request,res:Response,next:NextFunction)=>{
-    res.send("working");
-})
+// Create HTTP server
+const httpServer = createServer(app);
 
-app.listen(5000,()=>{
-    console.log("Running the server " );
-})
+// Set up WebSocket server
+const wsServer = new WebSocketServer({
+  server: httpServer,
+  path: "/graphql",
+});
+
+// GraphQL WebSocket integration
+useServer({ schema }, wsServer);
+
+// Set up Apollo Server for GraphQL
+const server = new ApolloServer({
+  schema,
+});
+
+async function startServer() {
+  await server.start();
+  server.applyMiddleware({ app, path: "/graphql" });
+
+  const PORT = 5000;
+  httpServer.listen(PORT, () => {
+    console.log(`🚀 REST Server ready at http://localhost:${PORT}`);
+    console.log(`🚀 GraphQL ready at http://localhost:${PORT}/graphql`);
+    console.log(`📡 Subscriptions ready at ws://localhost:${PORT}/graphql`);
+  });
+}
+
+startServer();

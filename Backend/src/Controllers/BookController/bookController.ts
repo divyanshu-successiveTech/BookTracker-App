@@ -1,5 +1,6 @@
 import { Request ,Response} from "express";
 import { bookService } from "../../Services/BookService/bookService";
+import {pubsub} from "../../GraphQL/pubsub"
 
 class BookController{
     async saveBook(req:Request,res:Response){
@@ -54,6 +55,7 @@ class BookController{
                 message:[]
             })
         }
+
 
         return res.json({
             statuscode:200,
@@ -117,8 +119,8 @@ class BookController{
             })
         }
 
-            console.log("PRINTING",result)
 
+        pubsub.publish("BOOK_LIKED",{bookLiked:result})
 
         return res.json({
             statuscode:200,

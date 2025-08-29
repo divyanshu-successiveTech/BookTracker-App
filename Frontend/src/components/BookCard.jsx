@@ -1,8 +1,7 @@
 import Link from "next/link";
 
 export default function BookCard({ book, authorName, categoryName }) {
-  const customDesc=book.shortDescription.substring(0,74)+"...";
-  console.log(book.coverImage)
+  const customDesc=book.shortDescription.substring(0,63)+"...";
   return (
     <div className="card">
       {book.coverImage ? (
