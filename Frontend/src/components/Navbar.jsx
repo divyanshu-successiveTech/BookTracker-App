@@ -154,12 +154,25 @@ export default function Navbar() {
           </ul>
         )}
       </div>
-      
 
       {/* Right side: User actions */}
       <div className="nav-right" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
         {user ? (
           <>
+            {/* Favourite Button (only when logged in) */}
+            <Link
+              href="/favourites"
+              style={{
+                padding: "6px 12px",
+                borderRadius: "5px",
+                backgroundColor: "#3b82f6", // Blue button
+                color: "#fff",
+                textDecoration: "none"
+              }}
+            >
+              Favourites
+            </Link>
+
             {/* Admin link (only for admins) */}
             {user?.role === "admin" && (
               <Link

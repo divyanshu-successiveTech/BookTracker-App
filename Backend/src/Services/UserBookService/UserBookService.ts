@@ -1,5 +1,6 @@
 const UserBooks =require( "../../Models/userReadlist" )
 const UserLikedBooks = require("../../Models/userLikedSchema")
+const UserFavouriteBooks = require("../../Models/userFavouriteBoks")
 import mongoose from "mongoose";
 
 
@@ -13,6 +14,14 @@ interface UpsertUser {
   userId: string;
   bookId: string;
   status: "like" | "unlike";
+}
+
+
+interface UpsertFavourite{
+    userId: string;
+  bookId: string;
+  status: "add" | "remove";
+
 }
 
 class UserBookService{
@@ -105,6 +114,68 @@ class UserBookService{
         .populate("likedBooks.bookId");
         return result || { user_id: id, likedBooks: [] };
     }
+
+
+    upsertUserFavouriteBook = async ({ userId, bookId, status }: UpsertFavourite) => {
+        // Validate userId and bookId format
+        if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(bookId)) {
+            throw new Error('Invalid userId or bookId');
+        }
+
+        // Check if the user already has a favouriteBooks list
+        const user = await UserFavouriteBooks.findOne({ user_id: userId });
+
+        if (!user) {
+            // If the user does not have a favourites list, create a new one if the action is 'add'
+            if (status === 'add') {
+            const newUser = new UserFavouriteBooks({
+                user_id: userId,
+                FavouriteBooks: [{ bookId }]
+            });
+            await newUser.save();
+            return newUser; // Return the newly created user document
+            } else {
+            // If the user does not have a list, they cannot remove a book
+            throw new Error('User does not have a favourites list to remove a book.');
+            }
+        } else {
+            // If the user already has a favourites list, proceed with adding/removing the book
+            if (status === 'add') {
+            // Add the book to favourites if it's not already in the list
+            const updated = await UserFavouriteBooks.findOneAndUpdate(
+                { user_id: userId, 'FavouriteBooks.bookId': { $ne: bookId } }, // Ensure bookId is not already in the list
+                { $push: { FavouriteBooks: { bookId } } }, // Add bookId to the FavouriteBooks array
+                { new: true } // Return the updated document
+            );
+            return updated;
+            } else if (status === 'remove') {
+            // Remove the book from favourites if it's present
+            const updated = await UserFavouriteBooks.findOneAndUpdate(
+                { user_id: userId, 'FavouriteBooks.bookId': bookId }, // Find the book in the favourites list
+                { $pull: { FavouriteBooks: { bookId } } }, // Remove the bookId from the FavouriteBooks array
+                { new: true } // Return the updated document
+            );
+            return updated;
+            } else {
+            throw new Error('Invalid status. Please use "add" or "remove".');
+            }
+        }
+    }
+
+
+    async getUserFavouriteBooks(userId: string) {
+        const favourite= UserFavouriteBooks.findOne({ user_id: userId })
+            .populate({
+                path: "FavouriteBooks.bookId", // Populate bookId inside FavouriteBooks
+                populate: [
+                    { path: "authorId", select: "authorName" }, // Populate authorName
+                    { path: "categoryId", select: "categoryName" } // Populate categoryName
+                ]
+        })
+
+        return favourite
+    }
+
 
 }
 
