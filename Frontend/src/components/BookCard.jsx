@@ -5,7 +5,6 @@ export default function BookCard({ book, authorName, categoryName }) {
   return (
     <div className="card">
       {book.coverImage ? (
-        // eslint-disable-next-line @next/next/no-img-element
         <img src={book.coverImage} alt={book.name} className="cover" />
       ) : null}
 

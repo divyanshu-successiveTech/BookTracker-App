@@ -23,14 +23,12 @@ export default function BookContentPage() {
 
         if (bookData?.content) {
           if (bookData.content.startsWith("http")) {
-            // case: content is a URL → fetch from URL
             const contentRes = await fetch(bookData.content);
             if (!contentRes.ok) throw new Error("Failed to fetch book content");
 
             const text = await contentRes.text();
             setContent(text);
           } else {
-            // case: content is plain text → use directly
             setContent(bookData.content);
           }
         } else {

@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  userName: String,
+  userName: {
+    type: String,
+    unique: true,      // Make userName unique
+    required: true,    // Optional but recommended
+  },
   password: String,
   preference: {
     type: mongoose.Schema.Types.ObjectId,
@@ -15,4 +19,4 @@ const userSchema = new mongoose.Schema({
   otp: String,
 });
 
-module.exports = mongoose.model("User",userSchema,"users");
+module.exports = mongoose.model("User", userSchema, "users");

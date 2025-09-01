@@ -59,7 +59,7 @@ export default function AddBookPage() {
 
       if (res.ok) {
         alert("Book added successfully!");
-        router.push("/"); // redirect to homepage
+        router.push("/"); 
       } else {
         const err = await res.json();
         alert("Failed to add book: " + (err.message || res.statusText));

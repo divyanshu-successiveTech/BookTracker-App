@@ -15,6 +15,7 @@ const typeDefs = gql`
 
   type Subscription {
     bookLiked: Book
+    bookAdded: Book
   }
 `;
 

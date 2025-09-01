@@ -9,5 +9,8 @@ export const resolvers = {
     bookLiked: {
       subscribe: () => pubsub.asyncIterableIterator(SUBSCRIPTIONS.BOOK_LIKED),
     },
+    bookAdded:{
+      subscribe: ()=>pubsub.asyncIterableIterator(SUBSCRIPTIONS.BOOK_ADDED)
+    }
   },
 };

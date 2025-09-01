@@ -78,7 +78,6 @@ export default function AdminPage() {
 
   return (
     <div style={{ padding: "20px" }}>
-      {/* Header with Add Book button */}
       {/* Header with Add Book & Add Multiple Books button */}
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
   <h1 style={{ marginBottom: "20px" }}>Admin - Manage Books</h1>

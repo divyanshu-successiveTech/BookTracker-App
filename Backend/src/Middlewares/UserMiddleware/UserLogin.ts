@@ -3,7 +3,9 @@ import Joi from "joi";
 
 const loginSchema = Joi.object({
     userName: Joi.string().alphanum().min(3).max(30).required(),
-    password:Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required()
+    password:Joi.string().pattern(
+      new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?#&])[A-Za-z\\d@$!%*?#&]{8,}$")
+    ).required()
 })
 class UserLogin{
     login(req:Request,res:Response,next:NextFunction){

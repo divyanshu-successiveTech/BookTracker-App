@@ -181,3 +181,9 @@ select {
 .btn:active {
   transform: translateY(0);
 }
+
+.error-msg {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin: 4px 0 12px;
+}

@@ -5,6 +5,7 @@ import {pubsub} from "../../GraphQL/pubsub"
 class BookController{
     async saveBook(req:Request,res:Response){
         const result = await bookService.addBook(req.body.ValidatedBook);
+        pubsub.publish("BOOK_ADDED",{bookAdded:result})
         res.json({statusCode:200,
             status:"Success",
             data:{message:"Saved Successfully",

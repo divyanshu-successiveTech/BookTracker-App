@@ -64,17 +64,17 @@ export default function FavouritePage() {
 
       {!hasAnyBooks && <p 
           style={{
-            background: "linear-gradient(45deg, #ff6f61, #ff8c00)", // Gradient background
-            color: "white", // White text for contrast
-            fontSize: "1.5rem", // Slightly larger text
-            fontWeight: "bold", // Make the text bold
-            padding: "20px", // Padding around the text
-            borderRadius: "8px", // Rounded corners
-            textAlign: "center", // Center align the text
-            margin: "20px auto", // Center the message with margin
-            maxWidth: "500px", // Max width for the box
-            boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)", // Shadow for depth
-            letterSpacing: "1px", // Add some letter spacing for a cleaner look
+            background: "linear-gradient(45deg, #ff6f61, #ff8c00)", 
+            color: "white", 
+            fontSize: "1.5rem",
+            fontWeight: "bold",
+            padding: "20px", 
+            borderRadius: "8px", 
+            textAlign: "center", 
+            margin: "20px auto", 
+            maxWidth: "500px", 
+            boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)", 
+            letterSpacing: "1px", 
           }}
         >
           No books in your list yet.

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { getAllCategories } from "../../lib/categoryService";
 import { useRouter } from "next/navigation";
+import Joi from "joi";
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -10,10 +11,46 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [preference, setPreference] = useState("");
   const [phone, setPhone] = useState("");
-  const [role, setRoleAuthenticate] = useState(""); 
+  const [role, setRoleAuthenticate] = useState("");
+
   const [categories, setCategories] = useState([]);
-  
+  const [errors, setErrors] = useState({});
+
   const router = useRouter();
+
+  const registerSchema = Joi.object({
+    userName: Joi.string()
+      .alphanum()
+      .min(3)
+      .max(30)
+      .required()
+      .messages({
+        "string.empty": "Username is required",
+        "string.min": "Username must be at least 3 characters",
+        "string.max": "Username must be at most 30 characters",
+      }),
+
+    password: Joi.string()
+      .pattern(
+        new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?#&])[A-Za-z\\d@$!%*?#&]{8,}$")
+      )
+      .required()
+      .messages({
+        "string.pattern.base":
+          "Password must be 8+ chars, include uppercase, lowercase, number & special character",
+        "string.empty": "Password is required",
+      }),
+
+    preference: Joi.string().required().messages({
+      "string.empty": "Preference is required",
+    }),
+
+    phone: Joi.string().required().messages({
+      "string.empty": "Phone number is required",
+    }),
+
+    role: Joi.string().allow("").optional(),
+  });
 
   useEffect(() => {
     async function fetchCategories() {
@@ -27,17 +64,24 @@ export default function RegisterPage() {
   }, []);
 
   async function handleRegister() {
-    if (!userName || !password || !preference || !phone) {
-      alert("Please fill all required fields");
+    const formData = { userName, password, preference, phone, role };
+
+    const { error } = registerSchema.validate(formData, { abortEarly: false });
+
+    if (error) {
+      const validationErrors = {};
+      error.details.forEach((err) => {
+        validationErrors[err.path[0]] = err.message;
+      });
+      setErrors(validationErrors);
       return;
     }
 
-    console.log(role)
-    const ok = await register({ userName, password, preference, phone, role });
-    
+    setErrors({}); // Clear errors if validation passes
 
+    const ok = await register(formData);
     if (ok) {
-      router.push("/login"); // navigate after successful registration
+      router.push("/login");
     } else {
       alert("Registration failed, please try again.");
     }
@@ -48,13 +92,16 @@ export default function RegisterPage() {
       <div className="login-card">
         <h1>Register</h1>
 
+        
         <input
           className="input"
           placeholder="Username"
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
         />
+        {errors.userName && <p className="error-msg">{errors.userName}</p>}
 
+        
         <input
           className="input"
           type="password"
@@ -62,6 +109,7 @@ export default function RegisterPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        {errors.password && <p className="error-msg">{errors.password}</p>}
 
         <select
           className="input"
@@ -75,6 +123,7 @@ export default function RegisterPage() {
             </option>
           ))}
         </select>
+        {errors.preference && <p className="error-msg">{errors.preference}</p>}
 
         <input
           className="input"
@@ -82,6 +131,7 @@ export default function RegisterPage() {
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
         />
+        {errors.phone && <p className="error-msg">{errors.phone}</p>}
 
         <input
           className="input"
@@ -90,6 +140,7 @@ export default function RegisterPage() {
           value={role}
           onChange={(e) => setRoleAuthenticate(e.target.value)}
         />
+        {errors.role && <p className="error-msg">{errors.role}</p>}
 
         <button className="btn" onClick={handleRegister}>
           Register

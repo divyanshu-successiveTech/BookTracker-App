@@ -1,3 +1,4 @@
 export const SUBSCRIPTIONS = {
   BOOK_LIKED: "BOOK_LIKED",
+  BOOK_ADDED: "BOOK_ADDED"
 };

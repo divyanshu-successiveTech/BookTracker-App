@@ -4,12 +4,22 @@ import bcrypt from 'bcrypt';
 
 
 export const registerSchema = Joi.object({
-    userName: Joi.string().alphanum().min(3).max(30).required(),
-    password:Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
-    preference:Joi.string().required(),
-    phone:Joi.string().required(),
-    role: Joi.string().optional() 
-})
+  userName: Joi.string().alphanum().min(3).max(30).required(),
+  
+  password: Joi.string()
+    .pattern(
+      new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?#&])[A-Za-z\\d@$!%*?#&]{8,}$")
+    )
+    .required()
+    .messages({
+      "string.pattern.base":
+        "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.",
+    }),
+
+  preference: Joi.string().required(),
+  phone: Joi.string().required(),
+  role: Joi.string().optional(),
+});
 
 class UserRegister {
 
@@ -26,8 +36,6 @@ class UserRegister {
             if (value.role && value.role ==="qwerty"){
                 value.role="admin";
             }
-
-            console.log(value)
 
             const pass = await bcrypt.hash(value.password,7)
             value.password=pass;

@@ -18,15 +18,14 @@ export default function BookContent({ book }) {
         setLoading(true);
         setError("");
 
-        // If content looks like a URL → fetch it
+        
         if (book.content.startsWith("http")) {
           const response = await fetch(book.content);
           if (!response.ok) throw new Error("Failed to fetch content");
 
-          const data = await response.text(); // or .json() depending on API
+          const data = await response.text(); 
           setContent(data);
         } else {
-          // If it's plain text → show directly
           setContent(book.content);
         }
       } catch (err) {

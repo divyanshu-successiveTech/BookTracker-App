@@ -23,7 +23,7 @@ export default function BookDetailPage() {
   const [currentStatus, setCurrentStatus] = useState("");
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(0);
-  const [inFavourites, setInFavourites] = useState(false); // State to check if the book is in favourites
+  const [inFavourites, setInFavourites] = useState(false); 
 
   const buttonStyle = {
     backgroundColor: "#007bff",
@@ -122,7 +122,6 @@ export default function BookDetailPage() {
         });
         const data = await res.json();
 
-        // Ensure we safely access the 'result' array inside 'data'
         const favouriteBooks = data?.data?.result || [];
         const isInFavourites = favouriteBooks.some((b) => b?.bookId?._id === book._id);
         setInFavourites(isInFavourites);
@@ -143,7 +142,7 @@ export default function BookDetailPage() {
 
     try {
       setLoading(true);
-      const status = inFavourites ? "remove" : "add"; // Add or remove based on current state
+      const status = inFavourites ? "remove" : "add"; 
       await fetch(`http://localhost:5000/favouriteBooks`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -319,7 +318,7 @@ export default function BookDetailPage() {
           alignItems: "flex-start",
           gap: "20px",
           background: "#f0f0f0",
-          position: "relative", // To ensure the button is on top of the image
+          position: "relative", 
         }}
       >
         <div style={{ flex: "1 1 auto", minWidth: "200px", maxWidth: "600px" }}>
@@ -367,14 +366,13 @@ export default function BookDetailPage() {
 
         {book.coverImage && (
           <div style={{ flexShrink: 0, width: "200px", marginLeft: "20px" }}>
-            {/* Add Favourite button on top of the image */}
             <button
               onClick={handleToggleFavourite}
               style={{
                 position: "absolute",
                 top: "20px",
-                right: "20px", // Adjusted position
-                background: inFavourites ? "#ff4040" : "#00c851", // Green for Add, Red for Remove
+                right: "20px", 
+                background: inFavourites ? "#ff4040" : "#00c851", 
                 color: "#fff",
                 border: "none",
                 borderRadius: "5px",
@@ -399,7 +397,6 @@ export default function BookDetailPage() {
         )}
       </div>
 
-      {/* Recommended Books Section */}
 
       {user?<RecommendedBooks categoryId={book.categoryId} currentBookId={book._id} />:""}
       
